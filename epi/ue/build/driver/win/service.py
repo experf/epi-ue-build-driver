@@ -1,7 +1,10 @@
-# SEE https://devtut.github.io/python/creating-a-windows-service-using-python.html#running-a-flask-web-application-as-a-service
+# SEE
+#
+# 1.    https://devtut.github.io/python/creating-a-windows-service-using-python.html#running-a-flask-web-application-as-a-service
+# 2.    https://stackoverflow.com/questions/15562446/how-to-stop-flask-application-without-using-ctrl-c
+#
 
-import socket
-# from multiprocessing import Process
+import threading
 
 import win32serviceutil
 
@@ -9,8 +12,27 @@ import servicemanager
 import win32event
 import win32service
 
-from epi.ue.build.driver.app import app
+from werkzeug.serving import make_server
 
+from epi.ue.build.driver.app import make_app
+
+
+class AppThread(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.app = make_app()
+        self.server = make_server('127.0.0.1', 5000, self.app)
+        self.ctx = self.app.app_context()
+        self.ctx.push()
+
+    def run(self):
+        print('STARTING server...')
+        self.server.serve_forever()
+
+    def shutdown(self):
+        print('STOPING server...')
+        self.server.shutdown()
+        print('STOPPED server.')
 
 class Service(win32serviceutil.ServiceFramework):
     """Base class to create winservice in Python"""
@@ -31,33 +53,30 @@ class Service(win32serviceutil.ServiceFramework):
         Constructor of the winservice
         """
         super().__init__(*args)
-        # self.process = None
-        self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
-        socket.setdefaulttimeout(60)
+        self.app_thread = None
 
     def SvcStop(self):
         """
         Called when the service is asked to stop
         """
+        print("ENTER SvcStop")
         self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
-        win32event.SetEvent(self.hWaitStop)
-        # !important! to report "SERVICE_STOPPED"
+        self.app_thread.shutdown()
+        # # !important! to report "SERVICE_STOPPED"
         self.ReportServiceStatus(win32service.SERVICE_STOPPED)
-        # self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
-        # self.process.terminate()
-        # self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+        print("EXIT SvcStop")
 
     def SvcDoRun(self):
         """
         Called when the service is asked to start
         """
-        print("RUNNING!!!!")
-        # self.process = Process(target=run_app)
-        # self.process.start()
-        # self.process.run()
+        print("ENTER SvcDoRun")
+        self.app_thread = AppThread()
+        self.app_thread.start()
         servicemanager.LogMsg(
             servicemanager.EVENTLOG_INFORMATION_TYPE,
             servicemanager.PYS_SERVICE_STARTED,
             (self._svc_name_, ""),
         )
-        app.run(port=5000)
+        self.app_thread.join()
+        print("EXIT SvcDoRun")
