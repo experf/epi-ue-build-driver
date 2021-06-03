@@ -1,28 +1,34 @@
-# SEE
+# pylint: disable=wrong-import-position,line-too-long
+
+# References
+# ============================================================================
 #
 # 1.    https://devtut.github.io/python/creating-a-windows-service-using-python.html#running-a-flask-web-application-as-a-service
 # 2.    https://stackoverflow.com/questions/15562446/how-to-stop-flask-application-without-using-ctrl-c
 #
 
+import sys
+if sys.platform != "win32":
+    raise ImportError(
+        f"{__name__} is windows-only (sys.platform={sys.platform}"
+    )
+
 import threading
 
-import win32serviceutil
-
-import servicemanager
-import win32event
-import win32service
+import win32serviceutil # pylint: disable=import-error
+import servicemanager # pylint: disable=import-error
+import win32service # pylint: disable=import-error
 
 from werkzeug.serving import make_server
 
-from epi.ue.build.driver.app import make_app
+from epi.ue.build.driver.app import app
 
 
 class AppThread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
-        self.app = make_app()
-        self.server = make_server('127.0.0.1', 5000, self.app)
-        self.ctx = self.app.app_context()
+        self.server = make_server('127.0.0.1', 5000, app)
+        self.ctx = app.app_context()
         self.ctx.push()
 
     def run(self):
