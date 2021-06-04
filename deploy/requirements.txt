@@ -1,1 +1,7 @@
 ansible>=2.9.4,<3
+
+# To connect to Windows over WinRM
+pywinrm>=0.4.1,<0.5
+
+# To package the... package
+wheel

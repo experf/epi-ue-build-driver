@@ -1,0 +1,2 @@
+CTL_REPO_ROOT: "{{ lookup('pipe', 'git rev-parse --show-toplevel') }}"
+CTL_USER: "{{ lookup('env', 'USER') }}"

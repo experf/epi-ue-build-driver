@@ -9,42 +9,42 @@
     wheel_filename: >-
       epi_ue_build_driver-{{ version }}-py3-none-any.whl
     local_src_path: >-
-      {{ REPO_ROOT }}/dist/{{ wheel_filename }}
+      {{ CTL_REPO_ROOT }}/dist/{{ wheel_filename }}
     remote_dest_path: >-
       C:\temp\{{ wheel_filename }}
     
   
   tasks:
-    # - name: Install prerequisites
-    #   win_chocolatey:
-    #     name:
-    #       - python
-    #     state: present
+    - name: Install prerequisites
+      win_chocolatey:
+        name:
+          - python
+        state: present
       
-    # - name: Build package (local)
-    #   delegate_to: localhost
-    #   # We usually inherit a `become: True`, causing Ansible to try to escalate to
-    #   # `root` locally as well, which is not what we want. Need to explicitly tell
-    #   # Ansible not to become.
-    #   become: False
-    #   shell:
-    #     cmd: python setup.py bdist_wheel
-    #     chdir: "{{ REPO_ROOT }}"
-    #   vars:
-    #     ansible_user: "{{ lookup('env', 'USER') }}"
+    - name: Build package (local)
+      delegate_to: localhost
+      # We usually inherit a `become: True`, causing Ansible to try to escalate to
+      # `root` locally as well, which is not what we want. Need to explicitly tell
+      # Ansible not to become.
+      become: False
+      shell:
+        cmd: python setup.py bdist_wheel
+        chdir: "{{ CTL_REPO_ROOT }}"
+      vars:
+        ansible_user: "{{ CTL_USER }}"
     
-    # - name: Create destination directory
-    #   win_file:
-    #     path: "{{ remote_dest_path | win_dirname }}"
+    - name: Create destination directory
+      win_file:
+        path: "{{ remote_dest_path | win_dirname }}"
 
-    # - name: Copy package to target
-    #   win_copy:
-    #     src: "{{ local_src_path }}"
-    #     dest: "{{ remote_dest_path }}"
+    - name: Copy package to target
+      win_copy:
+        src: "{{ local_src_path }}"
+        dest: "{{ remote_dest_path }}"
 
-    # - name: Install package
-    #   win_shell: >-
-    #     python -m pip install --force-reinstall {{ remote_dest_path }}
+    - name: Install package
+      win_shell: >-
+        python -m pip install --force-reinstall {{ remote_dest_path }}
     
     - name: Install server
       win_shell: epi-ue-build-driver install
