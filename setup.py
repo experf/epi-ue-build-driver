@@ -22,8 +22,8 @@ setup(
         "ue4cli==0.0.52",
         "ue4-ci-helpers==0.0.11",
 
-        # Flask 2 breaks me pip!
-        "flask>=1.1.4, <2",
+        # Proto-buf RPC runtime
+        "grpcio>=1.38.0,<2",
 
         # Windows
         "pywin32>=301; platform_system == 'Windows'",

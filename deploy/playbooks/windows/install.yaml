@@ -60,7 +60,7 @@
       ansible.windows.win_service:
         name: EPI UE Build Driver
         start_mode: auto
-        state: restarted
+        state: started
 
     - name: Allow service through firewall
       community.windows.win_firewall_rule:

@@ -3,6 +3,11 @@
 #     pip install -r ./dev/requirements.txt
 # 
 
+# Package build
+
+# Proto-buf RPC build tools
+grpcio-tools
+
 # The package itself
 -e .
 

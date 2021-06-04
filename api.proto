@@ -1,4 +1,13 @@
 syntax = "proto3";
 
-message Status {
+service API {
+  rpc Status (StatusRequest) returns (StatusResponse);
+}
+
+message StatusRequest {
+}
+
+message StatusResponse {
+  uint32 code = 1;
+  string message = 2;
 }
