@@ -32,10 +32,17 @@
       win_copy:
         src: "{{ local_src_path }}"
         dest: "{{ remote_dest_path }}"
+    
+    - name: Stop EPI UE Build Driver service
+      ansible.windows.win_service:
+        name: EPI UE Build Driver
+        state: stopped
+      ignore_errors: True
 
     - name: Un-Install package
       win_shell: >-
         python -m pip uninstall --yes {{ PKG_NAME }}
+      # ignore_errors: True
     
     - name: Install package
       win_shell: >-
@@ -44,8 +51,8 @@
     - name: Update server
       win_shell: epi-ue-build-driver update
     
-    - name: Restart EPI UE Build Driver service
-      ansible.windows.win_service:
-        name: EPI UE Build Driver
-        state: restarted
+    # - name: Start EPI UE Build Driver service
+    #   ansible.windows.win_service:
+    #     name: EPI UE Build Driver
+    #     state: started
 
