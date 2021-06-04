@@ -60,14 +60,14 @@ class Service(win32serviceutil.ServiceFramework):
         """
         Called when the service is asked to stop
         """
-        print("ENTER SvcStop [Thread {threading.get_ident()}]")
+        print(f"ENTER SvcStop [Thread {threading.get_ident()}]")
         self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
         get_or_create_eventloop().run_until_complete(
             self.server.server.stop()
         )
         # # !important! to report "SERVICE_STOPPED"
         self.ReportServiceStatus(win32service.SERVICE_STOPPED)
-        print("EXIT SvcStop [Thread {threading.get_ident()}]")
+        print(f"EXIT SvcStop [Thread {threading.get_ident()}]")
 
     def SvcDoRun(self):
         """
