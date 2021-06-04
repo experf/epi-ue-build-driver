@@ -44,7 +44,14 @@
 
     - name: Install package
       win_shell: >-
-        python -m pip install --force-reinstall {{ remote_dest_path }}
+        python -m pip install {{ remote_dest_path }}
+    
+    # https://stackoverflow.com/a/51653500
+    - name: Copy pywintypes39.dll into a better place
+      win_copy:
+        src: C:\Python39\Lib\site-packages\pywin32_system32\pywintypes39.dll
+        dest: C:\Python39\Lib\site-packages\win32\pywintypes39.dll
+        remote_src: True
     
     - name: Install server
       win_shell: epi-ue-build-driver install
@@ -53,5 +60,14 @@
       ansible.windows.win_service:
         name: EPI UE Build Driver
         start_mode: auto
-        state: started
-    
+        state: restarted
+
+    - name: Allow service through firewall
+      community.windows.win_firewall_rule:
+        name: epi-ue-build-driver 
+        localport: 5000
+        action: allow
+        direction: in
+        protocol: tcp
+        state: present
+        enabled: yes

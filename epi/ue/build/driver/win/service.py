@@ -27,7 +27,7 @@ from epi.ue.build.driver.app import app
 class AppThread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
-        self.server = make_server('127.0.0.1', 5000, app)
+        self.server = make_server('0.0.0.0', 5000, app)
         self.ctx = app.app_context()
         self.ctx.push()
 
