@@ -1,58 +1,71 @@
 import logging
 import asyncio
-from grpc import aio
-import threading
+import grpc
+from concurrent import futures
 
 from . import api_pb2
 from . import api_pb2_grpc
 
-from .helpers import get_or_create_eventloop
+from . import _credentials
 
-LOG = logging.getLogger(__name__)
+# LOG = logging.getLogger(__name__)
+
+class SignatureValidationInterceptor(grpc.ServerInterceptor):
+    def __init__(self):
+        def abort(ignored_request, context):
+            context.abort(grpc.StatusCode.UNAUTHENTICATED, "Invalid signature")
+
+        self._abortion = grpc.unary_unary_rpc_method_handler(abort)
+
+    def intercept_service(self, continuation, handler_call_details):
+        # Example HandlerCallDetails object:
+        #     _HandlerCallDetails(
+        #       method=u'/helloworld.Greeter/SayHello',
+        #       invocation_metadata=...)
+        signature = _credentials.PASSWORD
+        expected_metadata = (_credentials.PASSWORD_HEADER_KEY, signature)
+        if expected_metadata in handler_call_details.invocation_metadata:
+            return continuation(handler_call_details)
+        else:
+            return self._abortion
 
 
 class API(api_pb2_grpc.APIServicer):
-    async def Status(self, request, context):
+    def Status(self, request, context):
         return api_pb2.StatusResponse(code=200, message="OK")
 
 
 class Server:
     DEFAULT_LISTEN_ADDR = "[::]:5000"
 
-    server: aio.Server
+    server: grpc.Server
     listen_addr: str
 
     def __init__(self, listen_addr=DEFAULT_LISTEN_ADDR):
-        self.server = aio.server()
-        self.listen_addr = listen_addr
-        api_pb2_grpc.add_APIServicer_to_server(API(), self.server)
-        self.server.add_insecure_port(self.listen_addr)
-        self.loop = None
-
-    async def _serve(self):
-        LOG.info(f"Starting server on {self.listen_addr}")
-        await self.server.start()
-        try:
-            LOG.info("Waiting for server termination...")
-            await self.server.wait_for_termination()
-        except KeyboardInterrupt:
-            # Shuts down the server with 0 seconds of grace period. During the
-            # grace period, the server won't accept new connections and allow
-            # existing RPCs to continue within the grace period.
-            await self.server.stop(0)
-
-    def stop(self, done, grace=1.0):
-        future = asyncio.run_coroutine_threadsafe(
-            self.server.stop(grace),
-            self.loop
+        self.server = grpc.server(
+            futures.ThreadPoolExecutor(max_workers=3),
+            interceptors=(SignatureValidationInterceptor(),),
         )
-        future.add_done_callback(done)
+        self.listen_addr = listen_addr
+
+        api_pb2_grpc.add_APIServicer_to_server(API(), self.server)
+
+        # Loading credentials
+        server_credentials = grpc.ssl_server_credentials(
+            [
+                [
+                    _credentials.SERVER_CERTIFICATE_KEY,
+                    _credentials.SERVER_CERTIFICATE,
+                ]
+            ],
+        )
+
+        # Pass down credentials
+        port = self.server.add_secure_port(self.listen_addr, server_credentials)
 
     def run(self):
-        LOG.info("Starting run...")
-        self.loop = asyncio.get_event_loop()
-        try:
-            self.loop.run_until_complete(self._serve())
-        except Exception as error:
-            LOG.error(f".run() {error}")
-        LOG.info("Done w the run.")
+        self.server.start()
+        self.server.wait_for_termination()
+
+    def stop(self, grace: float = 1.0):
+        self.server.stop(grace)

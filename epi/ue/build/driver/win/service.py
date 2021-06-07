@@ -23,7 +23,6 @@ import servicemanager  # pylint: disable=import-error
 import win32service  # pylint: disable=import-error
 
 from epi.ue.build.driver.server import Server
-from epi.ue.build.driver.helpers import get_or_create_eventloop
 
 
 class Service(win32serviceutil.ServiceFramework):
@@ -65,7 +64,7 @@ class Service(win32serviceutil.ServiceFramework):
         """
         self.log("Constructing Service")
         super().__init__(*args)
-        self.server = Server()
+        self.server = None
 
     def SvcStop(self):
         """
@@ -73,18 +72,9 @@ class Service(win32serviceutil.ServiceFramework):
         """
         self.log("ENTER SvcStop")
         self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
-        try:
-            self.server.stop(self._stopped)
-        except Exception as error:
-            self.log_error(f"SvcStop {error}")
-
-        self.log("EXIT SvcStop")
-
-    def _stopped(self):
-        self.log("ENTER _stopped")
-        # # !important! to report "SERVICE_STOPPED"
+        self.server.stop()
         self.ReportServiceStatus(win32service.SERVICE_STOPPED)
-        self.log("EXIT _stopped")
+        self.log("EXIT SvcStop")
 
     def SvcDoRun(self):
         """
@@ -92,6 +82,7 @@ class Service(win32serviceutil.ServiceFramework):
         """
         self.log("ENTER SvcDoRun")
 
+        self.server = Server()
         self.server.run()
 
         servicemanager.LogMsg(

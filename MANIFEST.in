@@ -1,0 +1,4 @@
+include epi/ue/build/driver/credentials/service.pem
+include epi/ue/build/driver/credentials/service.key
+include epi/ue/build/driver/credentials/ca.cert
+include epi/ue/build/driver/credentials/password.txt

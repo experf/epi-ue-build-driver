@@ -32,5 +32,6 @@ setup(
         'console_scripts': [
             'epi-ue-build-driver = epi.ue.build.driver:main',
         ],
-    }
+    },
+    include_package_data = True,
 )

@@ -37,7 +37,6 @@
       ansible.windows.win_service:
         name: EPI UE Build Driver
         state: stopped
-      ignore_errors: True
 
     - name: Un-Install package
       win_shell: >-
@@ -51,8 +50,8 @@
     - name: Update server
       win_shell: epi-ue-build-driver update
     
-    # - name: Start EPI UE Build Driver service
-    #   ansible.windows.win_service:
-    #     name: EPI UE Build Driver
-    #     state: started
+    - name: Start EPI UE Build Driver service
+      ansible.windows.win_service:
+        name: EPI UE Build Driver
+        state: started
 
