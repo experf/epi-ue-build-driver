@@ -57,9 +57,6 @@ class ProcessCommunicator():
         self.queue.put(("code", self.popen.returncode))
 
     def __init__(self, popen):
-        '''This is a simple class that collects and aggregates the
-        output from a subprocess so that you can more reliably use
-        the class without having to block for subprocess.communicate.'''
         self.popen = popen
         self.running = True
         self.queue = Queue()
