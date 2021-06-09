@@ -1,5 +1,6 @@
 import logging
 import contextlib
+import argparse
 
 import grpc
 
@@ -26,8 +27,7 @@ class AuthGateway(grpc.AuthMetadataPlugin):
         #     service_url=u'https://localhost:50051/helloworld.Greeter',
         #     method_name=u'SayHello')
         callback(
-            ((_credentials.PASSWORD_HEADER_KEY, _credentials.PASSWORD),),
-            None
+            ((_credentials.PASSWORD_HEADER_KEY, _credentials.PASSWORD),), None
         )
 
 
@@ -62,6 +62,42 @@ def status():
     print(f"Driver is: {response.code} {response.message}")
 
 
-if __name__ == "__main__":
+def stream(args):
+    with create_client_channel("127.0.0.1:5000") as channel:
+        stub = api_pb2_grpc.APIStub(channel)
+        for response in stub.Stream(
+            api_pb2.StreamRequest(cmd=args[0], args=args[1:])
+        ):
+            print(response)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Client for EPI Unreal Engine Build Driver"
+    )
+    parser.add_argument(
+        "method",
+        help="What to call",
+    )
+    parser.add_argument(
+        "args",
+        help="Args to pass, if applicable",
+        nargs="*",
+    )
+
+    return parser.parse_args()
+
+
+def main():
     logging.basicConfig()
-    status()
+    args = parse_args()
+    if args.method == "status":
+        status()
+    elif args.method == "stream":
+        stream(args.args)
+    else:
+        raise Exception(f"WTF is this?! {args.method}")
+
+
+if __name__ == "__main__":
+    main()

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\tapi.proto\"\x0f\n\rStatusRequest\"/\n\x0eStatusResponse\x12\x0c\n\x04\x63ode\x18\x01 \x01(\r\x12\x0f\n\x07message\x18\x02 \x01(\t20\n\x03\x41PI\x12)\n\x06Status\x12\x0e.StatusRequest\x1a\x0f.StatusResponseb\x06proto3'
+  serialized_pb=b'\n\tapi.proto\"\x0f\n\rStatusRequest\"/\n\x0eStatusResponse\x12\x0c\n\x04\x63ode\x18\x01 \x01(\r\x12\x0f\n\x07message\x18\x02 \x01(\t\"*\n\rStreamRequest\x12\x0b\n\x03\x63md\x18\x01 \x01(\t\x12\x0c\n\x04\x61rgs\x18\x02 \x03(\t\"G\n\x0eStreamResponse\x12\x0e\n\x04\x63ode\x18\x01 \x01(\x05H\x00\x12\r\n\x03out\x18\x02 \x01(\tH\x00\x12\r\n\x03\x65rr\x18\x03 \x01(\tH\x00\x42\x07\n\x05value2]\n\x03\x41PI\x12)\n\x06Status\x12\x0e.StatusRequest\x1a\x0f.StatusResponse\x12+\n\x06Stream\x12\x0e.StreamRequest\x1a\x0f.StreamResponse0\x01\x62\x06proto3'
 )
 
 
@@ -88,8 +88,109 @@ _STATUSRESPONSE = _descriptor.Descriptor(
   serialized_end=77,
 )
 
+
+_STREAMREQUEST = _descriptor.Descriptor(
+  name='StreamRequest',
+  full_name='StreamRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='cmd', full_name='StreamRequest.cmd', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='args', full_name='StreamRequest.args', index=1,
+      number=2, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=79,
+  serialized_end=121,
+)
+
+
+_STREAMRESPONSE = _descriptor.Descriptor(
+  name='StreamResponse',
+  full_name='StreamResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='code', full_name='StreamResponse.code', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='out', full_name='StreamResponse.out', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='err', full_name='StreamResponse.err', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+    _descriptor.OneofDescriptor(
+      name='value', full_name='StreamResponse.value',
+      index=0, containing_type=None,
+      create_key=_descriptor._internal_create_key,
+    fields=[]),
+  ],
+  serialized_start=123,
+  serialized_end=194,
+)
+
+_STREAMRESPONSE.oneofs_by_name['value'].fields.append(
+  _STREAMRESPONSE.fields_by_name['code'])
+_STREAMRESPONSE.fields_by_name['code'].containing_oneof = _STREAMRESPONSE.oneofs_by_name['value']
+_STREAMRESPONSE.oneofs_by_name['value'].fields.append(
+  _STREAMRESPONSE.fields_by_name['out'])
+_STREAMRESPONSE.fields_by_name['out'].containing_oneof = _STREAMRESPONSE.oneofs_by_name['value']
+_STREAMRESPONSE.oneofs_by_name['value'].fields.append(
+  _STREAMRESPONSE.fields_by_name['err'])
+_STREAMRESPONSE.fields_by_name['err'].containing_oneof = _STREAMRESPONSE.oneofs_by_name['value']
 DESCRIPTOR.message_types_by_name['StatusRequest'] = _STATUSREQUEST
 DESCRIPTOR.message_types_by_name['StatusResponse'] = _STATUSRESPONSE
+DESCRIPTOR.message_types_by_name['StreamRequest'] = _STREAMREQUEST
+DESCRIPTOR.message_types_by_name['StreamResponse'] = _STREAMRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 StatusRequest = _reflection.GeneratedProtocolMessageType('StatusRequest', (_message.Message,), {
@@ -106,6 +207,20 @@ StatusResponse = _reflection.GeneratedProtocolMessageType('StatusResponse', (_me
   })
 _sym_db.RegisterMessage(StatusResponse)
 
+StreamRequest = _reflection.GeneratedProtocolMessageType('StreamRequest', (_message.Message,), {
+  'DESCRIPTOR' : _STREAMREQUEST,
+  '__module__' : 'api_pb2'
+  # @@protoc_insertion_point(class_scope:StreamRequest)
+  })
+_sym_db.RegisterMessage(StreamRequest)
+
+StreamResponse = _reflection.GeneratedProtocolMessageType('StreamResponse', (_message.Message,), {
+  'DESCRIPTOR' : _STREAMRESPONSE,
+  '__module__' : 'api_pb2'
+  # @@protoc_insertion_point(class_scope:StreamResponse)
+  })
+_sym_db.RegisterMessage(StreamResponse)
+
 
 
 _API = _descriptor.ServiceDescriptor(
@@ -115,8 +230,8 @@ _API = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=79,
-  serialized_end=127,
+  serialized_start=196,
+  serialized_end=289,
   methods=[
   _descriptor.MethodDescriptor(
     name='Status',
@@ -125,6 +240,16 @@ _API = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_STATUSREQUEST,
     output_type=_STATUSRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='Stream',
+    full_name='API.Stream',
+    index=1,
+    containing_service=None,
+    input_type=_STREAMREQUEST,
+    output_type=_STREAMRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from . import api_pb2
+from . import api_pb2 as api__pb2
 
 
 class APIStub(object):
@@ -16,8 +16,13 @@ class APIStub(object):
         """
         self.Status = channel.unary_unary(
                 '/API/Status',
-                request_serializer=api_pb2.StatusRequest.SerializeToString,
-                response_deserializer=api_pb2.StatusResponse.FromString,
+                request_serializer=api__pb2.StatusRequest.SerializeToString,
+                response_deserializer=api__pb2.StatusResponse.FromString,
+                )
+        self.Stream = channel.unary_stream(
+                '/API/Stream',
+                request_serializer=api__pb2.StreamRequest.SerializeToString,
+                response_deserializer=api__pb2.StreamResponse.FromString,
                 )
 
 
@@ -30,13 +35,24 @@ class APIServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def Stream(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_APIServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Status': grpc.unary_unary_rpc_method_handler(
                     servicer.Status,
-                    request_deserializer=api_pb2.StatusRequest.FromString,
-                    response_serializer=api_pb2.StatusResponse.SerializeToString,
+                    request_deserializer=api__pb2.StatusRequest.FromString,
+                    response_serializer=api__pb2.StatusResponse.SerializeToString,
+            ),
+            'Stream': grpc.unary_stream_rpc_method_handler(
+                    servicer.Stream,
+                    request_deserializer=api__pb2.StreamRequest.FromString,
+                    response_serializer=api__pb2.StreamResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -60,7 +76,24 @@ class API(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/API/Status',
-            api_pb2.StatusRequest.SerializeToString,
-            api_pb2.StatusResponse.FromString,
+            api__pb2.StatusRequest.SerializeToString,
+            api__pb2.StatusResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Stream(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/API/Stream',
+            api__pb2.StreamRequest.SerializeToString,
+            api__pb2.StreamResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

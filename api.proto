@@ -1,7 +1,10 @@
+// python -m grpc_tools.protoc -I. --python_out=./epi/ue/build/driver --grpc_python_out=./epi/ue/build/driver api.proto
+
 syntax = "proto3";
 
 service API {
   rpc Status (StatusRequest) returns (StatusResponse);
+  rpc Stream (StreamRequest) returns (stream StreamResponse);
 }
 
 message StatusRequest {
@@ -10,4 +13,17 @@ message StatusRequest {
 message StatusResponse {
   uint32 code = 1;
   string message = 2;
+}
+
+message StreamRequest {
+  string cmd = 1;
+  repeated string args = 2;
+}
+
+message StreamResponse {
+  oneof value {
+    int32 code = 1;
+    string out = 2;
+    string err = 3;
+  }
 }

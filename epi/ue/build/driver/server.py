@@ -2,6 +2,11 @@ import logging
 import asyncio
 import grpc
 from concurrent import futures
+import selectors
+import subprocess
+import sys
+import threading
+from queue import Queue
 
 from . import api_pb2
 from . import api_pb2_grpc
@@ -9,6 +14,7 @@ from . import api_pb2_grpc
 from . import _credentials
 
 # LOG = logging.getLogger(__name__)
+
 
 class SignatureValidationInterceptor(grpc.ServerInterceptor):
     def __init__(self):
@@ -30,9 +36,85 @@ class SignatureValidationInterceptor(grpc.ServerInterceptor):
             return self._abortion
 
 
+class ProcessCommunicator():
+    def enqueue_output(self):
+        if not self.popen.stdout or self.popen.stdout.closed:
+            return
+        out = self.popen.stdout
+        for line in iter(out.readline, b''):
+            self.queue.put(("out", line))
+
+    def enqueue_err(self):
+        if not self.popen.stderr or self.popen.stderr.closed:
+            return
+        err = self.popen.stderr
+        for line in iter(err.readline, b''):
+            self.queue.put(("err", line))
+
+    def enqueue_code(self):
+        self.out_thread.join()
+        self.err_thread.join()
+        self.queue.put(("code", self.popen.returncode))
+
+    def __init__(self, popen):
+        '''This is a simple class that collects and aggregates the
+        output from a subprocess so that you can more reliably use
+        the class without having to block for subprocess.communicate.'''
+        self.popen = popen
+        self.running = True
+        self.queue = Queue()
+
+        self.out_thread = threading.Thread(
+            name="out_read",
+            target=self.enqueue_output,
+            args=()
+        )
+        self.out_thread.daemon = True  # thread dies with the program
+        self.out_thread.start()
+
+        self.err_thread = threading.Thread(
+            name="err_read",
+            target=self.enqueue_err,
+            args=()
+        )
+        self.err_thread.daemon = True  # thread dies with the program
+        self.err_thread.start()
+
+        self.code_thread = threading.Thread(
+            name="code",
+            target=self.enqueue_code,
+            args=()
+        )
+        self.code_thread.daemon = True
+        self.code_thread.start()
+
 class API(api_pb2_grpc.APIServicer):
     def Status(self, request, context):
         return api_pb2.StatusResponse(code=200, message="OK")
+
+    def Stream(self, request, context):
+        p = subprocess.Popen(
+            [request.cmd, *request.args],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True,
+        )
+
+        pc = ProcessCommunicator(p)
+
+        while True:
+            stream, content = pc.queue.get()
+            if stream == "out":
+                yield api_pb2.StreamResponse(out=content)
+            elif stream == "err":
+                yield api_pb2.StreamResponse(err=content)
+            elif stream == "code":
+                yield api_pb2.StreamResponse(code=content)
+                break
+            else:
+                raise Exception(f"Bad stream name: {repr(stream)}")
+
+        yield api_pb2.StreamResponse(code=p.returncode)
 
 
 class Server:
