@@ -1,7 +1,7 @@
 import sys
 
 if sys.platform == "win32":
-    from .win.service import Service
+    from .win.win_service import WinService as Service
 else:
     from .unix.service import Service
 

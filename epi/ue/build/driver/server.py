@@ -13,8 +13,20 @@ from . import api_pb2_grpc
 
 from . import _credentials
 
-# LOG = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
+
+class IterQueue(Queue):
+    def __init__(self, is_done, *args, **kwds):
+        super().__init__(*args, **kwds)
+        self.is_done = is_done
+
+    def __iter__(self):
+        while True:
+            value = self.get()
+            yield value
+            if self.is_done(value):
+                break
 
 class SignatureValidationInterceptor(grpc.ServerInterceptor):
     def __init__(self):
@@ -52,14 +64,17 @@ class ProcessCommunicator():
             self.queue.put(("err", line))
 
     def enqueue_code(self):
-        self.out_thread.join()
-        self.err_thread.join()
-        self.queue.put(("code", self.popen.returncode))
+        code = self.popen.wait()
+        self.queue.put(("code", code))
+
+    def is_done(self, value) -> bool:
+        tag, payload = value
+        return tag == "code"
 
     def __init__(self, popen):
         self.popen = popen
         self.running = True
-        self.queue = Queue()
+        self.queue = IterQueue(self.is_done)
 
         self.out_thread = threading.Thread(
             name="out_read",
@@ -99,20 +114,19 @@ class API(api_pb2_grpc.APIServicer):
 
         pc = ProcessCommunicator(p)
 
-        while True:
-            stream, content = pc.queue.get()
-            if stream == "out":
-                yield api_pb2.StreamResponse(out=content)
-            elif stream == "err":
-                yield api_pb2.StreamResponse(err=content)
-            elif stream == "code":
-                yield api_pb2.StreamResponse(code=content)
-                break
-            else:
-                raise Exception(f"Bad stream name: {repr(stream)}")
-
-        yield api_pb2.StreamResponse(code=p.returncode)
-
+        for tag, payload in iter(pc.queue):
+            if tag == "out":
+                yield api_pb2.StreamResponse(
+                    out=api_pb2.StreamResponse.OutResponse(out=payload)
+                )
+            elif tag == "err":
+                yield api_pb2.StreamResponse(
+                    err=api_pb2.StreamResponse.ErrResponse(err=payload)
+                )
+            elif tag == "code":
+                yield api_pb2.StreamResponse(
+                    code=api_pb2.StreamResponse.CodeResponse(code=payload)
+                )
 
 class Server:
     DEFAULT_LISTEN_ADDR = "[::]:5000"

@@ -9,8 +9,6 @@ from . import api_pb2_grpc
 
 from . import _credentials
 
-_SIGNATURE_HEADER_KEY = "x-password"
-
 
 class AuthGateway(grpc.AuthMetadataPlugin):
     def __call__(self, context, callback):
@@ -68,7 +66,14 @@ def stream(args):
         for response in stub.Stream(
             api_pb2.StreamRequest(cmd=args[0], args=args[1:])
         ):
-            print(response)
+            if response.out:
+                print(f"OUT  ({type(response.out)}) {response.out}")
+            elif response.err:
+                print(f"ERR  ({type(response.err)}) {response.err}")
+            elif response.code:
+                print(f"CODE ({type(response.code)}) {response.code}")
+            else:
+                print(f"??? RESPONSE {response}")
 
 
 def parse_args():
