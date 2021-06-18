@@ -15,19 +15,6 @@ from . import _credentials
 
 LOG = logging.getLogger(__name__)
 
-
-class IterQueue(Queue):
-    def __init__(self, is_done, *args, **kwds):
-        super().__init__(*args, **kwds)
-        self.is_done = is_done
-
-    def __iter__(self):
-        while True:
-            value = self.get()
-            yield value
-            if self.is_done(value):
-                break
-
 class SignatureValidationInterceptor(grpc.ServerInterceptor):
     def __init__(self):
         def abort(ignored_request, context):
@@ -48,7 +35,7 @@ class SignatureValidationInterceptor(grpc.ServerInterceptor):
             return self._abortion
 
 
-class ProcessCommunicator():
+class ProcessCommunicator:
     def enqueue_output(self):
         if not self.popen.stdout or self.popen.stdout.closed:
             return
@@ -68,13 +55,13 @@ class ProcessCommunicator():
         self.queue.put(("code", code))
 
     def is_done(self, value) -> bool:
-        tag, payload = value
+        tag, _payload = value
         return tag == "code"
 
     def __init__(self, popen):
         self.popen = popen
         self.running = True
-        self.queue = IterQueue(self.is_done)
+        self.queue = Queue()
 
         self.out_thread = threading.Thread(
             name="out_read",
@@ -100,21 +87,28 @@ class ProcessCommunicator():
         self.code_thread.daemon = True
         self.code_thread.start()
 
+    def __iter__(self):
+        while True:
+            value = self.queue.get()
+            yield value
+            if self.is_done(value):
+                break
+
 class API(api_pb2_grpc.APIServicer):
     def Status(self, request, context):
         return api_pb2.StatusResponse(code=200, message="OK")
 
     def Stream(self, request, context):
-        p = subprocess.Popen(
+        popen = subprocess.Popen(
             [request.cmd, *request.args],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             shell=True,
         )
 
-        pc = ProcessCommunicator(p)
+        communicator = ProcessCommunicator(popen)
 
-        for tag, payload in iter(pc.queue):
+        for tag, payload in communicator:
             if tag == "code":
                 yield api_pb2.CmdResponse(
                     type=api_pb2.CmdResponse.Type.CODE,
