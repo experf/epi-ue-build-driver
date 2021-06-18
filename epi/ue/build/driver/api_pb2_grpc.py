@@ -22,7 +22,7 @@ class APIStub(object):
         self.Stream = channel.unary_stream(
                 '/API/Stream',
                 request_serializer=api__pb2.StreamRequest.SerializeToString,
-                response_deserializer=api__pb2.StreamResponse.FromString,
+                response_deserializer=api__pb2.CmdResponse.FromString,
                 )
 
 
@@ -52,7 +52,7 @@ def add_APIServicer_to_server(servicer, server):
             'Stream': grpc.unary_stream_rpc_method_handler(
                     servicer.Stream,
                     request_deserializer=api__pb2.StreamRequest.FromString,
-                    response_serializer=api__pb2.StreamResponse.SerializeToString,
+                    response_serializer=api__pb2.CmdResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -94,6 +94,6 @@ class API(object):
             metadata=None):
         return grpc.experimental.unary_stream(request, target, '/API/Stream',
             api__pb2.StreamRequest.SerializeToString,
-            api__pb2.StreamResponse.FromString,
+            api__pb2.CmdResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -66,12 +66,12 @@ def stream(args):
         for response in stub.Stream(
             api_pb2.StreamRequest(cmd=args[0], args=args[1:])
         ):
-            if response.out:
-                print(f"OUT  ({type(response.out)}) {response.out}")
-            elif response.err:
-                print(f"ERR  ({type(response.err)}) {response.err}")
-            elif response.code:
-                print(f"CODE ({type(response.code)}) {response.code}")
+            if response.type is api_pb2.CmdResponse.Type.OUT:
+                print(f"OUT> {response.text}", end='')
+            elif response.type is api_pb2.CmdResponse.Type.ERR:
+                print(f"ERR> {response.text}", end='')
+            elif response.type is api_pb2.CmdResponse.Type.CODE:
+                print(f"CODE {response.code}")
             else:
                 print(f"??? RESPONSE {response}")
 

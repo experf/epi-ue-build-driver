@@ -115,18 +115,22 @@ class API(api_pb2_grpc.APIServicer):
         pc = ProcessCommunicator(p)
 
         for tag, payload in iter(pc.queue):
-            if tag == "out":
-                yield api_pb2.StreamResponse(
-                    out=api_pb2.StreamResponse.OutResponse(out=payload)
+            if tag == "code":
+                yield api_pb2.CmdResponse(
+                    type=api_pb2.CmdResponse.Type.CODE,
+                    code=payload,
+                )
+            elif tag == "out":
+                yield api_pb2.CmdResponse(
+                    type=api_pb2.CmdResponse.Type.OUT,
+                    text=payload,
                 )
             elif tag == "err":
-                yield api_pb2.StreamResponse(
-                    err=api_pb2.StreamResponse.ErrResponse(err=payload)
+                yield api_pb2.CmdResponse(
+                    type=api_pb2.CmdResponse.Type.ERR,
+                    text=payload,
                 )
-            elif tag == "code":
-                yield api_pb2.StreamResponse(
-                    code=api_pb2.StreamResponse.CodeResponse(code=payload)
-                )
+
 
 class Server:
     DEFAULT_LISTEN_ADDR = "[::]:5000"

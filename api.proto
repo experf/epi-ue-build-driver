@@ -4,7 +4,7 @@ syntax = "proto3";
 
 service API {
   rpc Status (StatusRequest) returns (StatusResponse);
-  rpc Stream (StreamRequest) returns (stream StreamResponse);
+  rpc Stream (StreamRequest) returns (stream CmdResponse);
 }
 
 message StatusRequest {
@@ -20,19 +20,14 @@ message StreamRequest {
   repeated string args = 2;
 }
 
-message StreamResponse {
-  message CodeResponse {
-    int32 code = 1;
+message CmdResponse {
+  enum Type {
+    CODE = 0;
+    OUT = 1;
+    ERR = 2;
   }
-  message OutResponse {
-    string out = 1;
-  }
-  message ErrResponse {
-    string err = 1;
-  }
-  oneof value {
-    CodeResponse code = 1;
-    OutResponse out = 2;
-    ErrResponse err = 3;
-  }
+  
+  Type type = 1;
+  int32 code = 2;
+  string text = 3;
 }
