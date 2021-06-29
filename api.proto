@@ -4,7 +4,12 @@ syntax = "proto3";
 
 service API {
   rpc Status (StatusRequest) returns (StatusResponse);
-  rpc Stream (StreamRequest) returns (stream CmdResponse);
+  rpc Stream (CmdRequest) returns (stream CmdResponse);
+  
+  rpc Plastic_CloneRepo (Plastic_CloneRepoRequest) returns (stream CmdResponse);
+  rpc UE4CLI_SetRoot (UE4CLI_SetRootRequest) returns (stream CmdResponse);
+  rpc UE4CLI_Package (UE4CLI_PackageRequest) returns (stream CmdResponse);
+  rpc Upload (UploadRequest) returns (StatusResponse);
 }
 
 message StatusRequest {
@@ -15,7 +20,7 @@ message StatusResponse {
   string message = 2;
 }
 
-message StreamRequest {
+message CmdRequest {
   string cmd = 1;
   repeated string args = 2;
 }
@@ -30,4 +35,25 @@ message CmdResponse {
   Type type = 1;
   int32 code = 2;
   string text = 3;
+}
+
+message Plastic_CloneRepoRequest {
+  string repo_name = 1;
+  string repo_src = 2;
+  string repo_root = 3;
+}
+
+message UE4CLI_SetRootRequest {
+  string root_dir = 1;
+}
+
+message UE4CLI_PackageRequest {
+  string repo_root = 1;
+  string project_path = 2;
+  string project_configuration = 3;
+  repeated string extra_args = 4;
+}
+
+message UploadRequest {
+  // TODO
 }

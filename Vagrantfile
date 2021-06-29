@@ -12,7 +12,28 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "jborean93/WindowsServer2019"
+  config.vm.define :"vagrant-win" do |win|
+    win.vm.box = "jborean93/WindowsServer2019"
+    win.vm.communicator = "winrm"
+    win.vm.guest = :windows
+    
+    win.vm.provider "virtualbox" do |vb|
+    #   # Display the VirtualBox GUI when booting the machine
+    #   vb.gui = true
+    #
+    #   # Customize the amount of memory on the VM:
+      vb.memory = 4096
+      vb.cpus = 4
+    end
+    
+    win.vm.provision "ansible" do |ansible|
+      ENV["OBJC_DISABLE_INITIALIZE_FORK_SAFETY"] = "YES"
+      ENV["ANSIBLE_CONFIG"] = "./deploy/ansible.cfg"
+      
+      ansible.playbook = "deploy/playbooks/windows/setup.yaml"
+      ansible.inventory_path = "deploy/inventory"
+    end
+  end
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -50,11 +71,12 @@ Vagrant.configure("2") do |config|
   # Example for VirtualBox:
   #
   # config.vm.provider "virtualbox" do |vb|
-  #   # Display the VirtualBox GUI when booting the machine
-  #   vb.gui = true
-  #
-  #   # Customize the amount of memory on the VM:
-  #   vb.memory = "1024"
+  # #   # Display the VirtualBox GUI when booting the machine
+  # #   vb.gui = true
+  # #
+  # #   # Customize the amount of memory on the VM:
+  #   vb.memory = 4096
+  #   vb.cpus = 4
   # end
   #
   # View the documentation for the provider you are using for more

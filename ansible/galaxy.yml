@@ -1,0 +1,17 @@
+namespace: experf
+name: ue_build_driver
+version: 0.0.1
+readme: README.md
+authors:
+  - nrser (https://github.com/nrser)
+description: null
+# license_file: LICENSE
+tags: []
+# NOTE: No more dependencies can be added to this list
+dependencies:
+  nrser.nansi: ">=0.0.1"
+repository: https://github.com/experf/epi-ue-build-driver
+documentation: https://github.com/experf/epi-ue-build-driver
+homepage: https://github.com/experf/epi-ue-build-driver
+issues: https://github.com/experf/epi-ue-build-driver/issues
+#type: flatmap

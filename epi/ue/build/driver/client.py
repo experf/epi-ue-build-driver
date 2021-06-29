@@ -64,7 +64,7 @@ def stream(args):
     with create_client_channel("127.0.0.1:5000") as channel:
         stub = api_pb2_grpc.APIStub(channel)
         for response in stub.Stream(
-            api_pb2.StreamRequest(cmd=args[0], args=args[1:])
+            api_pb2.CmdRequest(cmd=args[0], args=args[1:])
         ):
             if response.type is api_pb2.CmdResponse.Type.OUT:
                 print(f"OUT> {response.text}", end='')

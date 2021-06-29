@@ -1,0 +1,41 @@
+- name: Setup Windows for driver deploy
+  hosts: all
+  # gather_facts: False
+  # gather_subset: min
+  
+  tasks:
+    - name: Disable UAC
+      win_regedit:
+        path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\system
+        name: EnableLUA
+        data: 0
+        type: dword
+        state: present
+      register: uac_result
+
+    - name: Reboot after disabling UAC
+      win_reboot:
+      when: uac_result is changed
+    
+    - name: Install prerequisite Chocolatey packages
+      win_chocolatey:
+        name:
+          - python
+        state: present
+    
+    # https://stackoverflow.com/a/51653500
+    - name: Copy pywintypes39.dll into a better place
+      win_copy:
+        src: C:\Python39\Lib\site-packages\pywin32_system32\pywintypes39.dll
+        dest: C:\Python39\Lib\site-packages\win32\pywintypes39.dll
+        remote_src: True
+
+    - name: Allow service through firewall
+      community.windows.win_firewall_rule:
+        name: epi-ue-build-driver 
+        localport: 5000
+        action: allow
+        direction: in
+        protocol: tcp
+        state: present
+        enabled: yes

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\tapi.proto\"\x0f\n\rStatusRequest\"/\n\x0eStatusResponse\x12\x0c\n\x04\x63ode\x18\x01 \x01(\r\x12\x0f\n\x07message\x18\x02 \x01(\t\"*\n\rStreamRequest\x12\x0b\n\x03\x63md\x18\x01 \x01(\t\x12\x0c\n\x04\x61rgs\x18\x02 \x03(\t\"n\n\x0b\x43mdResponse\x12\x1f\n\x04type\x18\x01 \x01(\x0e\x32\x11.CmdResponse.Type\x12\x0c\n\x04\x63ode\x18\x02 \x01(\x05\x12\x0c\n\x04text\x18\x03 \x01(\t\"\"\n\x04Type\x12\x08\n\x04\x43ODE\x10\x00\x12\x07\n\x03OUT\x10\x01\x12\x07\n\x03\x45RR\x10\x02\x32Z\n\x03\x41PI\x12)\n\x06Status\x12\x0e.StatusRequest\x1a\x0f.StatusResponse\x12(\n\x06Stream\x12\x0e.StreamRequest\x1a\x0c.CmdResponse0\x01\x62\x06proto3'
+  serialized_pb=b'\n\tapi.proto\"\x0f\n\rStatusRequest\"/\n\x0eStatusResponse\x12\x0c\n\x04\x63ode\x18\x01 \x01(\r\x12\x0f\n\x07message\x18\x02 \x01(\t\"\'\n\nCmdRequest\x12\x0b\n\x03\x63md\x18\x01 \x01(\t\x12\x0c\n\x04\x61rgs\x18\x02 \x03(\t\"n\n\x0b\x43mdResponse\x12\x1f\n\x04type\x18\x01 \x01(\x0e\x32\x11.CmdResponse.Type\x12\x0c\n\x04\x63ode\x18\x02 \x01(\x05\x12\x0c\n\x04text\x18\x03 \x01(\t\"\"\n\x04Type\x12\x08\n\x04\x43ODE\x10\x00\x12\x07\n\x03OUT\x10\x01\x12\x07\n\x03\x45RR\x10\x02\"R\n\x18Plastic_CloneRepoRequest\x12\x11\n\trepo_name\x18\x01 \x01(\t\x12\x10\n\x08repo_src\x18\x02 \x01(\t\x12\x11\n\trepo_root\x18\x03 \x01(\t\")\n\x15UE4CLI_SetRootRequest\x12\x10\n\x08root_dir\x18\x01 \x01(\t\"s\n\x15UE4CLI_PackageRequest\x12\x11\n\trepo_root\x18\x01 \x01(\t\x12\x14\n\x0cproject_path\x18\x02 \x01(\t\x12\x1d\n\x15project_configuration\x18\x03 \x01(\t\x12\x12\n\nextra_args\x18\x04 \x03(\t\"\x0f\n\rUploadRequest2\xb6\x02\n\x03\x41PI\x12)\n\x06Status\x12\x0e.StatusRequest\x1a\x0f.StatusResponse\x12%\n\x06Stream\x12\x0b.CmdRequest\x1a\x0c.CmdResponse0\x01\x12>\n\x11Plastic_CloneRepo\x12\x19.Plastic_CloneRepoRequest\x1a\x0c.CmdResponse0\x01\x12\x38\n\x0eUE4CLI_SetRoot\x12\x16.UE4CLI_SetRootRequest\x1a\x0c.CmdResponse0\x01\x12\x38\n\x0eUE4CLI_Package\x12\x16.UE4CLI_PackageRequest\x1a\x0c.CmdResponse0\x01\x12)\n\x06Upload\x12\x0e.UploadRequest\x1a\x0f.StatusResponseb\x06proto3'
 )
 
 
@@ -49,8 +49,8 @@ _CMDRESPONSE_TYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=199,
-  serialized_end=233,
+  serialized_start=196,
+  serialized_end=230,
 )
 _sym_db.RegisterEnumDescriptor(_CMDRESPONSE_TYPE)
 
@@ -119,23 +119,23 @@ _STATUSRESPONSE = _descriptor.Descriptor(
 )
 
 
-_STREAMREQUEST = _descriptor.Descriptor(
-  name='StreamRequest',
-  full_name='StreamRequest',
+_CMDREQUEST = _descriptor.Descriptor(
+  name='CmdRequest',
+  full_name='CmdRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='cmd', full_name='StreamRequest.cmd', index=0,
+      name='cmd', full_name='CmdRequest.cmd', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='args', full_name='StreamRequest.args', index=1,
+      name='args', full_name='CmdRequest.args', index=1,
       number=2, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -154,7 +154,7 @@ _STREAMREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=79,
-  serialized_end=121,
+  serialized_end=118,
 )
 
 
@@ -200,16 +200,176 @@ _CMDRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=123,
-  serialized_end=233,
+  serialized_start=120,
+  serialized_end=230,
+)
+
+
+_PLASTIC_CLONEREPOREQUEST = _descriptor.Descriptor(
+  name='Plastic_CloneRepoRequest',
+  full_name='Plastic_CloneRepoRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='repo_name', full_name='Plastic_CloneRepoRequest.repo_name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='repo_src', full_name='Plastic_CloneRepoRequest.repo_src', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='repo_root', full_name='Plastic_CloneRepoRequest.repo_root', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=232,
+  serialized_end=314,
+)
+
+
+_UE4CLI_SETROOTREQUEST = _descriptor.Descriptor(
+  name='UE4CLI_SetRootRequest',
+  full_name='UE4CLI_SetRootRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='root_dir', full_name='UE4CLI_SetRootRequest.root_dir', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=316,
+  serialized_end=357,
+)
+
+
+_UE4CLI_PACKAGEREQUEST = _descriptor.Descriptor(
+  name='UE4CLI_PackageRequest',
+  full_name='UE4CLI_PackageRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='repo_root', full_name='UE4CLI_PackageRequest.repo_root', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='project_path', full_name='UE4CLI_PackageRequest.project_path', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='project_configuration', full_name='UE4CLI_PackageRequest.project_configuration', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='extra_args', full_name='UE4CLI_PackageRequest.extra_args', index=3,
+      number=4, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=359,
+  serialized_end=474,
+)
+
+
+_UPLOADREQUEST = _descriptor.Descriptor(
+  name='UploadRequest',
+  full_name='UploadRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=476,
+  serialized_end=491,
 )
 
 _CMDRESPONSE.fields_by_name['type'].enum_type = _CMDRESPONSE_TYPE
 _CMDRESPONSE_TYPE.containing_type = _CMDRESPONSE
 DESCRIPTOR.message_types_by_name['StatusRequest'] = _STATUSREQUEST
 DESCRIPTOR.message_types_by_name['StatusResponse'] = _STATUSRESPONSE
-DESCRIPTOR.message_types_by_name['StreamRequest'] = _STREAMREQUEST
+DESCRIPTOR.message_types_by_name['CmdRequest'] = _CMDREQUEST
 DESCRIPTOR.message_types_by_name['CmdResponse'] = _CMDRESPONSE
+DESCRIPTOR.message_types_by_name['Plastic_CloneRepoRequest'] = _PLASTIC_CLONEREPOREQUEST
+DESCRIPTOR.message_types_by_name['UE4CLI_SetRootRequest'] = _UE4CLI_SETROOTREQUEST
+DESCRIPTOR.message_types_by_name['UE4CLI_PackageRequest'] = _UE4CLI_PACKAGEREQUEST
+DESCRIPTOR.message_types_by_name['UploadRequest'] = _UPLOADREQUEST
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 StatusRequest = _reflection.GeneratedProtocolMessageType('StatusRequest', (_message.Message,), {
@@ -226,12 +386,12 @@ StatusResponse = _reflection.GeneratedProtocolMessageType('StatusResponse', (_me
   })
 _sym_db.RegisterMessage(StatusResponse)
 
-StreamRequest = _reflection.GeneratedProtocolMessageType('StreamRequest', (_message.Message,), {
-  'DESCRIPTOR' : _STREAMREQUEST,
+CmdRequest = _reflection.GeneratedProtocolMessageType('CmdRequest', (_message.Message,), {
+  'DESCRIPTOR' : _CMDREQUEST,
   '__module__' : 'api_pb2'
-  # @@protoc_insertion_point(class_scope:StreamRequest)
+  # @@protoc_insertion_point(class_scope:CmdRequest)
   })
-_sym_db.RegisterMessage(StreamRequest)
+_sym_db.RegisterMessage(CmdRequest)
 
 CmdResponse = _reflection.GeneratedProtocolMessageType('CmdResponse', (_message.Message,), {
   'DESCRIPTOR' : _CMDRESPONSE,
@@ -239,6 +399,34 @@ CmdResponse = _reflection.GeneratedProtocolMessageType('CmdResponse', (_message.
   # @@protoc_insertion_point(class_scope:CmdResponse)
   })
 _sym_db.RegisterMessage(CmdResponse)
+
+Plastic_CloneRepoRequest = _reflection.GeneratedProtocolMessageType('Plastic_CloneRepoRequest', (_message.Message,), {
+  'DESCRIPTOR' : _PLASTIC_CLONEREPOREQUEST,
+  '__module__' : 'api_pb2'
+  # @@protoc_insertion_point(class_scope:Plastic_CloneRepoRequest)
+  })
+_sym_db.RegisterMessage(Plastic_CloneRepoRequest)
+
+UE4CLI_SetRootRequest = _reflection.GeneratedProtocolMessageType('UE4CLI_SetRootRequest', (_message.Message,), {
+  'DESCRIPTOR' : _UE4CLI_SETROOTREQUEST,
+  '__module__' : 'api_pb2'
+  # @@protoc_insertion_point(class_scope:UE4CLI_SetRootRequest)
+  })
+_sym_db.RegisterMessage(UE4CLI_SetRootRequest)
+
+UE4CLI_PackageRequest = _reflection.GeneratedProtocolMessageType('UE4CLI_PackageRequest', (_message.Message,), {
+  'DESCRIPTOR' : _UE4CLI_PACKAGEREQUEST,
+  '__module__' : 'api_pb2'
+  # @@protoc_insertion_point(class_scope:UE4CLI_PackageRequest)
+  })
+_sym_db.RegisterMessage(UE4CLI_PackageRequest)
+
+UploadRequest = _reflection.GeneratedProtocolMessageType('UploadRequest', (_message.Message,), {
+  'DESCRIPTOR' : _UPLOADREQUEST,
+  '__module__' : 'api_pb2'
+  # @@protoc_insertion_point(class_scope:UploadRequest)
+  })
+_sym_db.RegisterMessage(UploadRequest)
 
 
 
@@ -249,8 +437,8 @@ _API = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=235,
-  serialized_end=325,
+  serialized_start=494,
+  serialized_end=804,
   methods=[
   _descriptor.MethodDescriptor(
     name='Status',
@@ -267,8 +455,48 @@ _API = _descriptor.ServiceDescriptor(
     full_name='API.Stream',
     index=1,
     containing_service=None,
-    input_type=_STREAMREQUEST,
+    input_type=_CMDREQUEST,
     output_type=_CMDRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='Plastic_CloneRepo',
+    full_name='API.Plastic_CloneRepo',
+    index=2,
+    containing_service=None,
+    input_type=_PLASTIC_CLONEREPOREQUEST,
+    output_type=_CMDRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='UE4CLI_SetRoot',
+    full_name='API.UE4CLI_SetRoot',
+    index=3,
+    containing_service=None,
+    input_type=_UE4CLI_SETROOTREQUEST,
+    output_type=_CMDRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='UE4CLI_Package',
+    full_name='API.UE4CLI_Package',
+    index=4,
+    containing_service=None,
+    input_type=_UE4CLI_PACKAGEREQUEST,
+    output_type=_CMDRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='Upload',
+    full_name='API.Upload',
+    index=5,
+    containing_service=None,
+    input_type=_UPLOADREQUEST,
+    output_type=_STATUSRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
