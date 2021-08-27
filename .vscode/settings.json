@@ -1,3 +1,7 @@
 {
-  "python.pythonPath": "/Users/nrser/.pyenv/versions/3.9.2/envs/experf-epi-ue-build-driver-3.9.2/bin/python"
+  "python.pythonPath": "/Users/nrser/.pyenv/versions/3.9.2/envs/experf-epi-ue-build-driver-3.9.2/bin/python",
+  "cSpell.words": [
+    "pywin",
+    "pywintypes"
+  ]
 }

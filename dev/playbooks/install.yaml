@@ -1,0 +1,7 @@
+- name: Install driver
+  hosts: all
+  
+  tasks:
+    - experf.ue_build_driver.install:
+        src: "{{ CTL_REPO_ROOT }}"
+    

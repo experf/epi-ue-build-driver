@@ -26,13 +26,13 @@ Vagrant.configure("2") do |config|
       vb.cpus = 4
     end
     
-    win.vm.provision "ansible" do |ansible|
-      ENV["OBJC_DISABLE_INITIALIZE_FORK_SAFETY"] = "YES"
-      ENV["ANSIBLE_CONFIG"] = "./deploy/ansible.cfg"
+    # win.vm.provision "ansible" do |ansible|
+    #   ENV["OBJC_DISABLE_INITIALIZE_FORK_SAFETY"] = "YES"
+    #   ENV["ANSIBLE_CONFIG"] = "./deploy/ansible.cfg"
       
-      ansible.playbook = "deploy/playbooks/windows/setup.yaml"
-      ansible.inventory_path = "deploy/inventory"
-    end
+    #   ansible.playbook = "deploy/playbooks/windows/setup.yaml"
+    #   ansible.inventory_path = "deploy/inventory"
+    # end
   end
 
   # Disable automatic box update checking. If you disable this, then

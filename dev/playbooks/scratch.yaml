@@ -1,0 +1,9 @@
+- name: Scratch-Work Playbook
+  hosts: all
+  
+  tasks:
+    - win_shell: dir
+      register: rs
+    
+    - debug: var=rs
+  

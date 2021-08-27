@@ -1,0 +1,7 @@
+- name: Setup driver prerequisites
+  hosts: all
+  
+  tasks:
+    - experf.ue_build_driver.setup:
+        python_version: 3.9.2
+    

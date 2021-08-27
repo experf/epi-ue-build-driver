@@ -11,8 +11,21 @@ grpcio-tools
 # The package itself
 -e .
 
-# To package the... package
+# Ansible
+# ============================================================================
+
+ansible>=2.9.4,<3
+
+# To connect to Windows over WinRM
+pywinrm>=0.4.1,<0.5
+
+# -e ../../nrser/splatlog
+-e ../../nrser/nansi
+
+# To package and publish the... package
+setuptools
 wheel
+twine
 
 # VSCode / formatting stuff
 black==20.8b1 # No idea how this versioning crap works

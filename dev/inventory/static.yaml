@@ -1,0 +1,12 @@
+all:
+  hosts:
+    vagrant-win:
+        ansible_host: 127.0.0.1
+        ansible_user: vagrant
+        ansible_password: vagrant
+        ansible_port: 55986
+  
+  children:
+    windows:
+      hosts:
+        vagrant-win: {}
